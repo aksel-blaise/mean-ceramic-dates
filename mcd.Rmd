@@ -1,7 +1,7 @@
 ---
-title: "Mean Ceramic Dates for Caddo Sites in the Neches River Basin"
+title: "Mean ceramic dates for Caddo sites in the Neches River Basin"
 author: "Robert Z. Selden, Jr."
-date: "March 23, 2020"
+date: "June 8, 2020"
 output: github_document
 fig_caption: yes
 ---
@@ -10,9 +10,9 @@ fig_caption: yes
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Including all sites and all vessels
+## Including all sites and vessels
 
-The code chunk below was developed by Matthew A. Peeples, following Keith Kintigh, who was channelling Stanley South (1977). Further details regarding the method can be found on [Matthew A. Peeples'](http://www.mattpeeples.net/mcd.html) website.
+The code chunk below was developed by Matthew A. Peeples, following Keith Kintigh, who was channelling Stanley South (1977).
 
 ```{r mcd, echo=TRUE}
 # this code chunk was repurposed from Matthew A. Peeples excellent example (link above)
@@ -65,6 +65,7 @@ range[i,2] <- mean(temp) + (sd(temp)*1.96)}
 
 output <- cbind(row.names(mydata),mcd,range)
 colnames(output) <- c('site','mcd','lower','higher') #modified from Peeples' code
+output
 
 write.table(output,file='mcd_out.csv',sep=',',row.names=F)
 # end of Peeples' code
@@ -94,7 +95,7 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data=caddo, mapping=aes(x=Site, ymin=lower, ymax=upper), width=0.5, size=0.5) +
+  geom_errorbar(data=caddo, mapping=aes(x=Site, ymin=lower, ymax=upper), width=0.5, size=0.5, colour = "springgreen4") +
   geom_point(data=caddo, mapping=aes(x=Site, y=Mean_Ceramic_Date), size=2, shape=21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   cs
@@ -153,6 +154,7 @@ range[i,2] <- mean(temp) + (sd(temp)*1.96)}
 
 output <- cbind(row.names(mydata),mcd,range)
 colnames(output) <- c('site','mcd','lower','higher') #modified from Peeples' code
+output
 
 write.table(output,file='mcd_out2.csv',sep=',',row.names=F)
 # end of Peeples' code
@@ -182,7 +184,7 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data=caddo2, mapping=aes(x=Site, ymin=lower, ymax=upper), width=0.5, size=0.5) +
+  geom_errorbar(data=caddo2, mapping=aes(x=Site, ymin=lower, ymax=upper), width=0.5, size=0.5, colour = "springgreen4") +
   geom_point(data=caddo2, mapping=aes(x=Site, y=Mean_Ceramic_Date), size=2, shape=21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   cs
