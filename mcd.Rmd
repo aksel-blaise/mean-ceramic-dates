@@ -3,6 +3,7 @@ title: "Mean ceramic dates for Caddo sites in the Neches River Basin"
 author: "Robert Z. Selden, Jr."
 date: "June 8, 2020"
 output: github_document
+bibliography: mcd.bib
 fig_caption: yes
 ---
 
@@ -12,11 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## MCD for NRB
 
-Mean ceramic dates were calculated borrowing methodologically using code developed by Matthew A. Peeples, who was following Keith Kintigh, who was channelling Stanley South (1977).
+Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011].
 
 ```{r mcd, echo=TRUE}
 # set working directory
 setwd(getwd())
+
+#read data
 mydata <- read.csv(file = 'nrb_mcd_data.csv', sep = ',', header = T, row.names = 1)
 types <- as.matrix(colnames(mydata))
 
@@ -105,3 +108,5 @@ ggplot() +
   cs
 # end of code
 ```
+
+## References
