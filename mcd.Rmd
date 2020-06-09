@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 The code chunk below was developed by Matthew A. Peeples, following Keith Kintigh, who was channelling Stanley South (1977).
 
 ```{r mcd, echo=TRUE}
-# this code chunk was repurposed from Matthew A. Peeples excellent example (link above)
 # set working directory
 setwd(getwd())
 mydata <- read.csv(file = 'nrb_mcd_data.csv', sep = ',', header = T, row.names = 1)
@@ -77,6 +76,7 @@ I prefer graphs over tables where possible (and appropriate), and I think it app
 
 ```{r ggplot, out.width = "100%", dpi = 300, echo=TRUE, }
 # plot mean ceramic dates with error bars
+
 #install.packages("devtools")
 #devtools::install_github("tidyverse/ggplot2")
 library(tidyverse)
@@ -94,11 +94,12 @@ Site <- caddo$site
 Mean_Ceramic_Date_CE <- caddo$mcd
 lower<-caddo$lower
 upper<-caddo$higher
+
 # plot
 cs = theme(
-  axis.title.x = element_text(size = 14),
+  axis.title.x = element_text(size = 11),
   axis.text.x = element_text(size = 8),
-  axis.title.y = element_text(size = 14),
+  axis.title.y = element_text(size = 11),
   axis.text.y = element_text(size = 6))
 
 ggplot() +
@@ -106,101 +107,5 @@ ggplot() +
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   cs
-```
-
-## Limit to those sites with five or more vessels
-
-```{r mcd2, echo=TRUE}
-# this code chunk was repurposed from Matthew A. Peeples excellent example (link above)
-# set working directory
-setwd(getwd())
-mydata <- read.csv(file = 'nrb2_mcd_data.csv', sep = ',', header = T, row.names = 1)
-types <- as.matrix(colnames(mydata))
-
-dates <- read.csv(file = 'nrb2_type_dates.csv', sep = ',', header = T)
-bc <- min(dates[,2:3])
-dates[,2:3] <- dates[,2:3]+(bc*-1)
-
-midpt <- as.matrix(((dates[,3]-dates[,2])/2)+dates[,2])
-dates <- cbind(dates,midpt)
-
-mydata2 <- mydata
-
-mcd.calc <- function(x,types,dates) {
-tot <- as.matrix(rowSums(x))
-for (i in 1:nrow(types)) {
-for (j in 1:nrow(dates)) {
-if (types[i,] == dates[j,1]) 
-{x[,i] <- x[,i] * dates[j,4]}}}
-
-mcd <- matrix(0,nrow(mydata),1)
-rownames(mcd) <- rownames(mydata)
-
-newtot <- as.matrix(rowSums(x))
-
-for (i in 1:nrow(mcd)) {
-mcd[i,1] <- newtot[i,]/tot[i,]+bc}
-return(mcd)}
-
-mcd <- mcd.calc(mydata2,types,dates)
-
-###############################################################################
-
-nsim <- 1000
-
-data.rowsum <- as.matrix(rowSums(mydata))
-range <- matrix(0,nrow(mydata),2)
-
-for (i in 1:nrow(mydata)) {
-data.sim <- rmultinom(nsim,data.rowsum[i,],prob=mydata[i,])
-data.sim <- t(data.sim)
-temp <- mcd.calc(data.sim,types,dates)
-range[i,1] <- mean(temp) - (sd(temp)*1.96)
-range[i,2] <- mean(temp) + (sd(temp)*1.96)}
-
-output <- cbind(row.names(mydata),mcd,range)
-colnames(output) <- c('site','mcd','lower','higher') #modified from Peeples' code
-output
-
-write.table(output,file='mcd_out2.csv',sep=',',row.names=F)
-```
-
-## Plot results (mcd_out) with error bars
-
-I prefer graphs over tables where possible (and appropriate), and I think it appropriate in this instance. 
-
-```{r ggplot2, out.width = "100%", dpi = 300, echo=TRUE, }
-# plot mean ceramic dates with error bars
-#install.packages("devtools")
-#devtools::install_github("tidyverse/ggplot2")
-library(tidyverse)
-
-# read mcd_out
-caddo2 <- read.csv("mcd_out2.csv",header = TRUE, as.is=TRUE)
-
-# reorder sites by mcd
-caddo2$site
-caddo2$site <- factor(caddo2$site,levels = caddo2$site[order(caddo2$mcd)])
-caddo2$site
-
-# define variables
-Site <- caddo2$site
-Mean_Ceramic_Date_CE <- caddo2$mcd
-lower <- caddo2$lower
-upper <- caddo2$higher
-
-# plot
-cs = theme(
-  axis.title.x = element_text(size = 14),
-  axis.text.x = element_text(size = 8),
-  axis.title.y = element_text(size = 14),
-  axis.text.y = element_text(size = 6))
-
-ggplot() +
-  geom_errorbar(data = caddo2, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "springgreen4") +
-  geom_point(data = caddo2, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
-  coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
-  cs
 # end of code
 ```
-
