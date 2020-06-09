@@ -10,9 +10,9 @@ fig_caption: yes
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Including all sites and vessels
+## MCD for NRB
 
-The code chunk below was developed by Matthew A. Peeples, following Keith Kintigh, who was channelling Stanley South (1977).
+Mean ceramic dates were calculated borrowing methodologically using code developed by Matthew A. Peeples, who was following Keith Kintigh, who was channelling Stanley South (1977).
 
 ```{r mcd, echo=TRUE}
 # set working directory
@@ -28,7 +28,6 @@ midpt <- as.matrix(((dates[,3]-dates[,2])/2)+dates[,2])
 dates <- cbind(dates,midpt)
 
 mydata2 <- mydata
-
 
 mcd.calc <- function(x,types,dates) {
 tot <- as.matrix(rowSums(x))
@@ -63,16 +62,13 @@ range[i,1] <- mean(temp) - (sd(temp)*1.96)
 range[i,2] <- mean(temp) + (sd(temp)*1.96)}
 
 output <- cbind(row.names(mydata),mcd,range)
-colnames(output) <- c('site','mcd','lower','higher') #modified from Peeples' code
+colnames(output) <- c('site','mcd','lower','higher')
 output
 
-write.table(output,file = 'mcd_out.csv', sep = ',', row.names = F)
-# end of Peeples' code
+write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 ```
 
-## Plot results (mcd_out) with error bars
-
-I prefer graphs over tables where possible (and appropriate), and I think it appropriate in this instance. 
+## Plot MCD results with error bars
 
 ```{r ggplot, out.width = "100%", dpi = 300, echo=TRUE, }
 # plot mean ceramic dates with error bars
@@ -82,18 +78,18 @@ I prefer graphs over tables where possible (and appropriate), and I think it app
 library(tidyverse)
 
 # read mcd_out
-caddo<-read.csv("mcd_out.csv",header = TRUE, as.is=TRUE)
+caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
 
 # reorder sites by mcd
 caddo$site
-caddo$site <- factor(caddo$site,levels = caddo$site[order(caddo$mcd)])
+caddo$site <- factor(caddo$site, levels = caddo$site[order(caddo$mcd)])
 caddo$site
 
 # define variables
 Site <- caddo$site
 Mean_Ceramic_Date_CE <- caddo$mcd
-lower<-caddo$lower
-upper<-caddo$higher
+lower <- caddo$lower
+upper <- caddo$higher
 
 # plot
 cs = theme(
