@@ -18,10 +18,10 @@ The code chunk below was developed by Matthew A. Peeples, following Keith Kintig
 # this code chunk was repurposed from Matthew A. Peeples excellent example (link above)
 # set working directory
 setwd(getwd())
-mydata <- read.csv(file='nrb_mcd_data.csv',sep=',',header=T,row.names=1)
+mydata <- read.csv(file = 'nrb_mcd_data.csv', sep = ',', header = T, row.names = 1)
 types <- as.matrix(colnames(mydata))
 
-dates <- read.csv(file='nrb_type_dates.csv',sep=',',header=T)
+dates <- read.csv(file = 'nrb_type_dates.csv', sep = ',', header = T)
 bc <- min(dates[,2:3])
 dates[,2:3] <- dates[,2:3]+(bc*-1)
 
@@ -67,7 +67,7 @@ output <- cbind(row.names(mydata),mcd,range)
 colnames(output) <- c('site','mcd','lower','higher') #modified from Peeples' code
 output
 
-write.table(output,file='mcd_out.csv',sep=',',row.names=F)
+write.table(output,file = 'mcd_out.csv', sep = ',', row.names = F)
 # end of Peeples' code
 ```
 
@@ -80,11 +80,18 @@ I prefer graphs over tables where possible (and appropriate), and I think it app
 #install.packages("devtools")
 #devtools::install_github("tidyverse/ggplot2")
 library(tidyverse)
+
 # read mcd_out
 caddo<-read.csv("mcd_out.csv",header = TRUE, as.is=TRUE)
+
+# reorder sites by mcd
+caddo$site
+caddo$site <- factor(caddo$site,levels = caddo$site[order(caddo$mcd)])
+caddo$site
+
 # define variables
-Site<-caddo$site
-Mean_Ceramic_Date<-caddo$mcd
+Site <- caddo$site
+Mean_Ceramic_Date_CE <- caddo$mcd
 lower<-caddo$lower
 upper<-caddo$higher
 # plot
@@ -95,8 +102,8 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data=caddo, mapping=aes(x=Site, ymin=lower, ymax=upper), width=0.5, size=0.5, colour = "springgreen4") +
-  geom_point(data=caddo, mapping=aes(x=Site, y=Mean_Ceramic_Date), size=2, shape=21, fill = "white") +
+  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "springgreen4") +
+  geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   cs
 ```
@@ -107,10 +114,10 @@ ggplot() +
 # this code chunk was repurposed from Matthew A. Peeples excellent example (link above)
 # set working directory
 setwd(getwd())
-mydata <- read.csv(file='nrb2_mcd_data.csv',sep=',',header=T,row.names=1)
+mydata <- read.csv(file = 'nrb2_mcd_data.csv', sep = ',', header = T, row.names = 1)
 types <- as.matrix(colnames(mydata))
 
-dates <- read.csv(file='nrb2_type_dates.csv',sep=',',header=T)
+dates <- read.csv(file = 'nrb2_type_dates.csv', sep = ',', header = T)
 bc <- min(dates[,2:3])
 dates[,2:3] <- dates[,2:3]+(bc*-1)
 
@@ -118,7 +125,6 @@ midpt <- as.matrix(((dates[,3]-dates[,2])/2)+dates[,2])
 dates <- cbind(dates,midpt)
 
 mydata2 <- mydata
-
 
 mcd.calc <- function(x,types,dates) {
 tot <- as.matrix(rowSums(x))
@@ -157,7 +163,6 @@ colnames(output) <- c('site','mcd','lower','higher') #modified from Peeples' cod
 output
 
 write.table(output,file='mcd_out2.csv',sep=',',row.names=F)
-# end of Peeples' code
 ```
 
 ## Plot results (mcd_out) with error bars
@@ -169,13 +174,21 @@ I prefer graphs over tables where possible (and appropriate), and I think it app
 #install.packages("devtools")
 #devtools::install_github("tidyverse/ggplot2")
 library(tidyverse)
+
 # read mcd_out
-caddo2<-read.csv("mcd_out2.csv",header = TRUE, as.is=TRUE)
+caddo2 <- read.csv("mcd_out2.csv",header = TRUE, as.is=TRUE)
+
+# reorder sites by mcd
+caddo2$site
+caddo2$site <- factor(caddo2$site,levels = caddo2$site[order(caddo2$mcd)])
+caddo2$site
+
 # define variables
-Site<-caddo2$site
-Mean_Ceramic_Date<-caddo2$mcd
-lower<-caddo2$lower
-upper<-caddo2$higher
+Site <- caddo2$site
+Mean_Ceramic_Date_CE <- caddo2$mcd
+lower <- caddo2$lower
+upper <- caddo2$higher
+
 # plot
 cs = theme(
   axis.title.x = element_text(size = 14),
@@ -184,8 +197,8 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data=caddo2, mapping=aes(x=Site, ymin=lower, ymax=upper), width=0.5, size=0.5, colour = "springgreen4") +
-  geom_point(data=caddo2, mapping=aes(x=Site, y=Mean_Ceramic_Date), size=2, shape=21, fill = "white") +
+  geom_errorbar(data = caddo2, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "springgreen4") +
+  geom_point(data = caddo2, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   cs
 # end of code
