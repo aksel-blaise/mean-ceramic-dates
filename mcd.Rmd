@@ -66,7 +66,6 @@ range[i,2] <- mean(temp) + (sd(temp)*1.96)}
 
 output <- cbind(row.names(mydata),mcd,range)
 colnames(output) <- c('site','mcd','lower','higher')
-output
 
 write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 ```
@@ -82,11 +81,10 @@ library(tidyverse)
 
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
+caddo
 
 # reorder sites by mcd
-caddo$site
 caddo$site <- factor(caddo$site, levels = caddo$site[order(caddo$mcd)])
-caddo$site
 
 # define variables
 Site <- caddo$site
@@ -102,7 +100,7 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "springgreen4") +
+  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") +
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   cs
