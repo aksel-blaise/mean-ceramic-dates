@@ -7,13 +7,15 @@ bibliography: mcd.bib
 fig_caption: yes
 ---
 
+Before running this script, ensure that there are no duplicates and that each site and type have at least one value assigned. If there is a duplicate site/type or a row/column that are all 0's, this script will not work and line 59 will throw an error that reads: _Error in rmultinom(nsim, data.rowsum[i, ], prob = mydata[i, ]) : no positive probabilities_. There are two sets of type/site files included in this [GitHub repository](https://github.com/aksel-blaise/mean-ceramic-dates); one with all types/sites, and another with only those sites that include >=5 typed vessels. I encourage you to tinker with and explore both.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Calculate MCD and confidence interval
 
-Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011]. Dates and probability ranges were then plotted using the `ggplot2` package that is included in the `tidyverse`.
+Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011]. Dates and probability ranges were then plotted using the `ggplot2` package included in the `tidyverse`.
 
 ```{r mcd, echo=TRUE}
 # set working directory
@@ -22,6 +24,7 @@ setwd(getwd())
 #read data
 mydata <- read.csv(file = 'nrb_mcd_data.csv', sep = ',', header = T, row.names = 1)
 types <- as.matrix(colnames(mydata))
+
 
 dates <- read.csv(file = 'nrb_type_dates.csv', sep = ',', header = T)
 bc <- min(dates[,2:3])
@@ -39,7 +42,7 @@ for (j in 1:nrow(dates)) {
 if (types[i,] == dates[j,1]) 
 {x[,i] <- x[,i] * dates[j,4]}}}
 
-mcd <- matrix(0,nrow(mydata),1)
+mcd <- matrix(0, nrow(mydata), 1)
 rownames(mcd) <- rownames(mydata)
 
 newtot <- as.matrix(rowSums(x))
@@ -48,7 +51,7 @@ for (i in 1:nrow(mcd)) {
 mcd[i,1] <- newtot[i,]/tot[i,]+bc}
 return(mcd)}
 
-mcd <- mcd.calc(mydata2,types,dates)
+mcd <- mcd.calc(mydata2, types, dates)
 
 ###############################################################################
 
@@ -74,14 +77,15 @@ write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 
 ```{r ggplot, out.width = "100%", dpi = 600, echo=TRUE, }
 # plot mean ceramic dates with error bars
+# if you use the Rmd file included in the GitHub repository, it will export a publication-ready figure at 600dpi in the mcd_files folder
 
-#install.packages("devtools")
-#devtools::install_github("tidyverse/ggplot2")
-library(tidyverse)
+#install.packages("devtools") # if devtools not installed, delete the # at the beginning of this line
+#devtools::install_github("tidyverse/ggplot2") # if tidyverse/ggplot2 not installed, delete the # at the beginning of this line (use the most up-to-date version)
+library(tidyverse) # load tidyverse
 
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
-caddo # table that includes the mean ceramic date and the lower/higher values associated with the 95% probability range
+caddo # table that includes the site, mean ceramic date, and the lower/higher values associated with the 95% probability range
 
 # reorder sites by mcd
 caddo$site <- factor(caddo$site, levels = caddo$site[order(caddo$mcd)])
@@ -100,7 +104,7 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") +
+  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") + # for color publications, I recommend changing "gray" to your favourite colour.
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   labs(x = "Archaeological Site", y = "Date Range CE") + # the axes are flipped, so x = y and y = x
