@@ -7,7 +7,9 @@ bibliography: mcd.bib
 fig_caption: yes
 ---
 
-Before running this script, ensure that there are no duplicates and that each site and type have at least one value assigned. If there is a duplicate site/type or a row/column that are all 0's, this script will not work and line 59 will throw an error that reads: _Error in rmultinom(nsim, data.rowsum[i, ], prob = mydata[i, ]) : no positive probabilities_. There are two sets of type/site files included in this [GitHub repository](https://github.com/aksel-blaise/mean-ceramic-dates); one with all types/sites, and another with only those sites that include >=5 typed vessels. I encourage you to tinker with and explore both.
+Before running this script, ensure that there are no duplicates and that each site and type have at least one value assigned. If there is a duplicate site/type or a row/column that are all 0's, this script will not work and line 59 will throw an error that reads: _Error in rmultinom(nsim, data.rowsum[i, ], prob = mydata[i, ]) : no positive probabilities_. 
+
+There are two datasets included in this [GitHub repository](https://github.com/aksel-blaise/mean-ceramic-dates); one with all types/sites, and another with only those sites that include >=5 typed vessels. I encourage you to tinker with and explore both.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
