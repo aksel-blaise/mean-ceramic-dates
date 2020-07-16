@@ -1,7 +1,7 @@
 ---
 title: "Mean ceramic dates for Caddo sites in the Neches River Basin"
 author: "Robert Z. Selden, Jr."
-date: "June 8, 2020"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: github_document
 bibliography: mcd.bib
 fig_caption: yes
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## MCD for NRB
 
-Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011].
+Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011]. Dates and probability ranges were then plotted using the `ggplot2` package that is included in the `tidyverse`.
 
 ```{r mcd, echo=TRUE}
 # set working directory
@@ -103,7 +103,9 @@ ggplot() +
   geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") +
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
+  labs(y = "Date Range CE", x = "Archaeological Site") + # the axes are flipped, so x = y and y = x
   cs
+
 # end of code
 ```
 
