@@ -3,7 +3,7 @@ Mean ceramic dates for Caddo sites in the Neches River Basin
 Robert Z. Selden, Jr.
 16 July, 2020
 
-## MCD for NRB
+## Calculate MCD and confidence interval
 
 Sites selected for this study come from the Caddo Ceramic Vessel
 Database (Perttula 2017), which were plotted using coordinates from the
@@ -69,7 +69,7 @@ colnames(output) <- c('site','mcd','lower','higher')
 write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 ```
 
-## Plot MCD results with error bars
+## Plot MCD results with confidence interval as error bars
 
 ``` r
 # plot mean ceramic dates with error bars
@@ -93,55 +93,55 @@ library(tidyverse)
 ``` r
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
-caddo
+caddo # table that includes the mean ceramic date and the lower/higher values associated with the 95% probability range
 ```
 
     ##       site      mcd    lower   higher
-    ## 1   41SM56 1116.667 1092.158 1139.135
+    ## 1   41SM56 1116.667 1090.244 1138.328
     ## 2   41SM55 1250.000 1250.000 1250.000
-    ## 3   41SM77 1548.750 1521.756 1571.632
-    ## 4   41SM90 1530.625 1525.706 1535.544
-    ## 5   41SM73 1206.250 1029.519 1430.685
-    ## 6   41SM93 1538.500 1533.902 1543.159
+    ## 3   41SM77 1548.750 1518.412 1580.762
+    ## 4   41SM90 1530.625 1525.405 1534.774
+    ## 5   41SM73 1206.250 1016.417 1391.747
+    ## 6   41SM93 1538.500 1533.750 1543.862
     ## 7  41SM151 1540.000 1540.000 1540.000
     ## 8  41SM158 1532.500 1521.797 1541.366
-    ## 9  41SM249 1535.000 1527.213 1543.196
-    ## 10 41SM150 1346.667 1232.704 1440.901
+    ## 9  41SM249 1535.000 1528.502 1542.927
+    ## 10 41SM150 1346.667 1227.280 1464.081
     ## 11 41SM355 1540.000 1540.000 1540.000
     ## 12   41SM2 1525.000 1525.000 1525.000
-    ## 13 41HE114 1535.263 1531.949 1538.513
-    ## 14   41HE4 1532.500 1524.669 1537.882
-    ## 15  41HE75 1531.667 1525.591 1537.062
+    ## 13 41HE114 1535.263 1530.207 1540.061
+    ## 14   41HE4 1532.500 1524.135 1540.559
+    ## 15  41HE75 1531.667 1526.830 1536.299
     ## 16  41HE78 1525.000 1525.000 1525.000
     ## 17  41HE82 1540.000 1540.000 1540.000
-    ## 18   41HE7 1528.750 1522.473 1534.414
-    ## 19   41CE4 1532.143 1528.195 1535.799
-    ## 20  41CE12 1589.135 1563.523 1612.922
-    ## 21  41CE14 1528.571 1527.217 1529.885
-    ## 22  41CE15 1601.667 1490.196 1690.757
-    ## 23  41CE17 1530.192 1527.504 1533.069
-    ## 24  41CE19 1076.273 1054.446 1098.003
-    ## 25  41CE23 1535.000 1529.440 1541.274
-    ## 26  41CE25 1547.000 1527.200 1573.640
+    ## 18   41HE7 1528.750 1521.875 1535.625
+    ## 19   41CE4 1532.143 1528.943 1535.226
+    ## 20  41CE12 1589.135 1565.215 1610.994
+    ## 21  41CE14 1528.571 1527.482 1529.923
+    ## 22  41CE15 1601.667 1491.785 1715.698
+    ## 23  41CE17 1530.192 1527.780 1533.146
+    ## 24  41CE19 1076.273 1054.954 1096.984
+    ## 25  41CE23 1535.000 1530.212 1540.095
+    ## 26  41CE25 1547.000 1524.270 1571.600
     ## 27 41CE421 1525.000 1525.000 1525.000
-    ## 28   41CE6 1645.833 1567.559 1741.693
-    ## 29   41AN1 1532.759 1530.365 1535.321
-    ## 30  41AN13 1692.692 1638.566 1743.631
-    ## 31  41AN14 1527.727 1524.887 1531.180
+    ## 28   41CE6 1645.833 1568.034 1718.225
+    ## 29   41AN1 1532.759 1530.539 1535.380
+    ## 30  41AN13 1692.692 1646.616 1744.797
+    ## 31  41AN14 1527.727 1524.284 1531.227
     ## 32  41AN16 1525.000 1525.000 1525.000
-    ## 33  41AN18 1532.500 1523.617 1543.832
-    ## 34 41AN184 1596.667 1481.507 1726.452
-    ## 35   41AN2 1555.625 1513.191 1600.495
+    ## 33  41AN18 1532.500 1521.231 1544.075
+    ## 34 41AN184 1596.667 1481.136 1697.571
+    ## 35   41AN2 1555.625 1525.594 1591.307
     ## 36  41AN21 1525.000 1525.000 1525.000
-    ## 37  41AN26 1716.111 1693.790 1742.007
-    ## 38  41AN32 1538.750 1518.227 1559.151
-    ## 39  41AN34 1540.278 1521.793 1561.449
-    ## 40  41AN38 1528.750 1524.820 1532.017
-    ## 41  41AN39 1529.286 1523.796 1534.775
-    ## 42  41AN44 1535.909 1532.227 1539.369
-    ## 43  41AN48 1532.500 1522.010 1541.766
+    ## 37  41AN26 1716.111 1695.440 1740.033
+    ## 38  41AN32 1538.750 1518.109 1560.370
+    ## 39  41AN34 1540.278 1515.609 1564.947
+    ## 40  41AN38 1528.750 1525.225 1532.071
+    ## 41  41AN39 1529.286 1524.588 1533.634
+    ## 42  41AN44 1535.909 1532.697 1539.511
+    ## 43  41AN48 1532.500 1523.634 1543.203
     ## 44  41AN53 1525.000 1525.000 1525.000
-    ## 45  41AN54 1545.714 1517.949 1574.660
+    ## 45  41AN54 1545.714 1511.550 1582.605
     ## 46  41AN56 1540.000 1540.000 1540.000
     ## 47  41AN57 1525.000 1525.000 1525.000
     ## 48  41AN67 1525.000 1525.000 1525.000
@@ -157,7 +157,7 @@ Mean_Ceramic_Date_CE <- caddo$mcd
 lower <- caddo$lower
 upper <- caddo$higher
 
-# plot
+# plot that includes the mean ceramic date and the 95% probability range reordered by mcd
 cs = theme(
   axis.title.x = element_text(size = 11),
   axis.text.x = element_text(size = 8),
@@ -168,13 +168,16 @@ ggplot() +
   geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") +
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
-  labs(y = "Date Range CE", x = "Archaeological Site") +
+  labs(x = "Archaeological Site", y = "Date Range CE") + # the axes are flipped, so x = y and y = x
   cs
 ```
 
 <img src="mcd_files/figure-gfm/ggplot-1.png" width="100%" />
 
 ``` r
+# figure caption
+  fig.cap = "Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin."
+
 # end of code
 ```
 

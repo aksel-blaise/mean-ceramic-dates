@@ -11,7 +11,7 @@ fig_caption: yes
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## MCD for NRB
+## Calculate MCD and confidence interval
 
 Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011]. Dates and probability ranges were then plotted using the `ggplot2` package that is included in the `tidyverse`.
 
@@ -70,9 +70,9 @@ colnames(output) <- c('site','mcd','lower','higher')
 write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 ```
 
-## Plot MCD results with error bars
+## Plot MCD results with confidence interval as error bars
 
-```{r ggplot, out.width = "100%", dpi = 300, echo=TRUE, }
+```{r ggplot, out.width = "100%", dpi = 600, echo=TRUE, }
 # plot mean ceramic dates with error bars
 
 #install.packages("devtools")
@@ -81,7 +81,7 @@ library(tidyverse)
 
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
-caddo
+caddo # table that includes the mean ceramic date and the lower/higher values associated with the 95% probability range
 
 # reorder sites by mcd
 caddo$site <- factor(caddo$site, levels = caddo$site[order(caddo$mcd)])
@@ -92,7 +92,7 @@ Mean_Ceramic_Date_CE <- caddo$mcd
 lower <- caddo$lower
 upper <- caddo$higher
 
-# plot
+# plot that includes the mean ceramic date and the 95% probability range reordered by mcd
 cs = theme(
   axis.title.x = element_text(size = 11),
   axis.text.x = element_text(size = 8),
@@ -103,8 +103,10 @@ ggplot() +
   geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") +
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
-  labs(y = "Date Range CE", x = "Archaeological Site") + # the axes are flipped, so x = y and y = x
+  labs(x = "Archaeological Site", y = "Date Range CE") + # the axes are flipped, so x = y and y = x
   cs
+# figure caption
+  fig.cap = "Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin."
 
 # end of code
 ```
