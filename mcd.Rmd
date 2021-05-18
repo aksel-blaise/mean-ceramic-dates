@@ -21,7 +21,7 @@ Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11
 
 ```{r mcd, echo=TRUE}
 # set working directory
-setwd(getwd())
+library(here)
 
 #read data
 mydata <- read.csv(file = 'nrb_mcd_data.csv', sep = ',', header = T, row.names = 1)
@@ -83,11 +83,11 @@ write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 
 #install.packages("devtools") # if devtools not installed, delete the # at the beginning of this line
 #devtools::install_github("tidyverse/ggplot2") # if tidyverse/ggplot2 not installed, delete the # at the beginning of this line (use the most up-to-date version)
-library(tidyverse) # load tidyverse
+library(ggplot2) # load ggplot2
 
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
-caddo # table that includes the site, mean ceramic date, and the lower/higher values associated with the 95% probability range
+knitr::kable(caddo, "pipe")
 
 # reorder sites by mcd
 caddo$site <- factor(caddo$site, levels = caddo$site[order(caddo$mcd)])
