@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Calculate MCD and confidence interval
 
-Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011]. Dates and probability ranges were then plotted using the `ggplot2` package included in the `tidyverse`.
+Sites selected for this study come from the Caddo Ceramic Vessel Database [@RN11605], which were plotted using coordinates from the Texas Historic Sites Atlas, then clipped to the extent of the Neches River Basin. Mean ceramic dates were calculated and plotted using modified code originally developed by [Peeples (2011)](http://www.mattpeeples.net/mcd.html), who was following South [-@RN21010;-@RN21011]. Dates and probability ranges were then plotted using `ggplot2`.
 
 ```{r mcd, echo=TRUE}
 # set working directory
@@ -115,6 +115,22 @@ ggplot() +
   fig.cap = "Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin."
 
 # end of code
+```
+
+### Colophon
+
+This version of the analysis was generated on `r Sys.time()` using the following computational environment and dependencies: 
+
+```{r colophon, cache = FALSE}
+# what R packages and versions were used?
+if ("devtools" %in% installed.packages()) devtools::session_info()
+```
+
+Current Git commit details are:
+
+```{r}
+# where can I find this commit? 
+if ("git2r" %in% installed.packages() & git2r::in_repository(path = ".")) git2r::repository(here::here())  
 ```
 
 ## References
