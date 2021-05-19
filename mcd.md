@@ -1,19 +1,21 @@
 Mean ceramic dates for Caddo sites in the Neches River Basin
 ================
 Robert Z. Selden, Jr.
-18 May, 2021
+19 May, 2021
 
 Before running this script, ensure that there are no duplicates and that
 each site and type have at least one value assigned. If there is a
 duplicate site/type or a row/column that are all 0’s, this script will
-not work and line 59 will throw an error that reads: *Error in
-rmultinom(nsim, data.rowsum\[i, \], prob = mydata\[i, \]) : no positive
-probabilities*.
+not work and line 59 will throw an error that reads:
+
+*Error in rmultinom(nsim, data.rowsum\[i, \], prob = mydata\[i, \]) : no
+positive probabilities*
 
 There are two datasets included in this [GitHub
 repository](https://github.com/aksel-blaise/mean-ceramic-dates); one
-with all types/sites, and another with only those sites that include
-&gt;=5 typed vessels. I encourage you to tinker with and explore both.
+with all types/sites (prefix = nrb), and another with only those sites
+that include &gt;=5 typed vessels (prefix = nrb2). I encourage you to
+tinker with and explore both.
 
 ## Calculate MCD and confidence interval
 
@@ -41,9 +43,9 @@ types <- as.matrix(colnames(mydata))
 
 dates <- read.csv(file = 'nrb_type_dates.csv', sep = ',', header = T)
 bc <- min(dates[,2:3])
-dates[,2:3] <- dates[,2:3]+(bc*-1)
+dates[,2:3] <- dates[,2:3] + (bc*-1)
 
-midpt <- as.matrix(((dates[,3]-dates[,2])/2)+dates[,2])
+midpt <- as.matrix(((dates[,3] - dates[,2])/2) + dates[,2])
 dates <- cbind(dates,midpt)
 
 mydata2 <- mydata
@@ -61,8 +63,8 @@ rownames(mcd) <- rownames(mydata)
 newtot <- as.matrix(rowSums(x))
 
 for (i in 1:nrow(mcd)) {
-mcd[i,1] <- newtot[i,]/tot[i,]+bc}
-return(mcd)}
+mcd[i,1] <- newtot[i,] / tot[i,] + bc}
+return(mcd)} 
 
 mcd <- mcd.calc(mydata2, types, dates)
 
@@ -71,17 +73,17 @@ mcd <- mcd.calc(mydata2, types, dates)
 nsim <- 1000
 
 data.rowsum <- as.matrix(rowSums(mydata))
-range <- matrix(0,nrow(mydata),2)
+range <- matrix(0, nrow(mydata), 2)
 
 for (i in 1:nrow(mydata)) {
-data.sim <- rmultinom(nsim,data.rowsum[i,],prob=mydata[i,])
+data.sim <- rmultinom(nsim, data.rowsum[i,], prob = mydata[i,])
 data.sim <- t(data.sim)
-temp <- mcd.calc(data.sim,types,dates)
+temp <- mcd.calc(data.sim, types,dates)
 range[i,1] <- mean(temp) - (sd(temp)*1.96)
 range[i,2] <- mean(temp) + (sd(temp)*1.96)}
 
-output <- cbind(row.names(mydata),mcd,range)
-colnames(output) <- c('site','mcd','lower','higher')
+output <- cbind(row.names(mydata), mcd, range)
+colnames(output) <- c('site', 'mcd', 'lower', 'higher')
 
 write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 ```
@@ -92,66 +94,67 @@ write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 # plot mean ceramic dates with error bars
 # if you use the Rmd file included in the GitHub repository, it will export a publication-ready figure at 600dpi in the mcd_files folder
 
-#install.packages("devtools") # if devtools not installed, delete the # at the beginning of this line
-#devtools::install_github("tidyverse/ggplot2") # if tidyverse/ggplot2 not installed, delete the # at the beginning of this line (use the most up-to-date version)
+#devtools::install_github("tidyverse/ggplot2")
 library(ggplot2) # load ggplot2
 
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
-knitr::kable(caddo, "pipe")
+knitr::kable(caddo, "pipe", caption = "Table 1. Attributes included in table.")
 ```
 
 | site    |      mcd |    lower |   higher |
 |:--------|---------:|---------:|---------:|
-| 41SM56  | 1116.667 | 1084.616 | 1143.275 |
+| 41SM56  | 1116.667 | 1087.276 | 1142.656 |
 | 41SM55  | 1250.000 | 1250.000 | 1250.000 |
-| 41SM77  | 1548.750 | 1522.028 | 1574.727 |
-| 41SM90  | 1530.625 | 1525.345 | 1535.675 |
-| 41SM73  | 1206.250 | 1031.463 | 1376.700 |
-| 41SM93  | 1538.500 | 1533.209 | 1544.403 |
+| 41SM77  | 1548.750 | 1519.683 | 1571.960 |
+| 41SM90  | 1530.625 | 1525.552 | 1536.081 |
+| 41SM73  | 1206.250 | 1017.563 | 1425.294 |
+| 41SM93  | 1538.500 | 1531.767 | 1543.948 |
 | 41SM151 | 1540.000 | 1540.000 | 1540.000 |
-| 41SM158 | 1532.500 | 1523.177 | 1543.966 |
-| 41SM249 | 1535.000 | 1525.988 | 1542.788 |
-| 41SM150 | 1346.667 | 1249.053 | 1475.845 |
+| 41SM158 | 1532.500 | 1522.260 | 1542.127 |
+| 41SM249 | 1535.000 | 1525.015 | 1544.372 |
+| 41SM150 | 1346.667 | 1241.254 | 1457.998 |
 | 41SM355 | 1540.000 | 1540.000 | 1540.000 |
 | 41SM2   | 1525.000 | 1525.000 | 1525.000 |
-| 41HE114 | 1535.263 | 1532.048 | 1539.413 |
-| 41HE4   | 1532.500 | 1524.999 | 1539.848 |
-| 41HE75  | 1531.667 | 1526.817 | 1536.176 |
+| 41HE114 | 1535.263 | 1531.049 | 1539.059 |
+| 41HE4   | 1532.500 | 1524.298 | 1539.783 |
+| 41HE75  | 1531.667 | 1527.597 | 1536.620 |
 | 41HE78  | 1525.000 | 1525.000 | 1525.000 |
 | 41HE82  | 1540.000 | 1540.000 | 1540.000 |
-| 41AN201 | 1528.750 | 1522.794 | 1534.400 |
-| 41CE4   | 1532.143 | 1528.180 | 1535.114 |
-| 41CE12  | 1589.135 | 1564.705 | 1614.392 |
-| 41CE14  | 1528.571 | 1527.518 | 1529.881 |
-| 41CE15  | 1601.667 | 1489.122 | 1713.123 |
-| 41CE17  | 1530.192 | 1527.797 | 1532.776 |
-| 41CE19  | 1076.273 | 1054.120 | 1092.842 |
-| 41CE23  | 1535.000 | 1530.219 | 1540.189 |
-| 41CE25  | 1547.000 | 1522.105 | 1568.450 |
+| 41AN201 | 1528.750 | 1522.902 | 1535.363 |
+| 41CE4   | 1532.143 | 1528.647 | 1535.434 |
+| 41CE12  | 1589.135 | 1569.582 | 1609.040 |
+| 41CE14  | 1528.571 | 1527.161 | 1529.673 |
+| 41CE15  | 1601.667 | 1481.303 | 1681.214 |
+| 41CE17  | 1530.192 | 1527.330 | 1532.749 |
+| 41CE19  | 1076.273 | 1059.861 | 1099.149 |
+| 41CE23  | 1535.000 | 1529.279 | 1539.802 |
+| 41CE25  | 1547.000 | 1523.716 | 1573.092 |
 | 41CE421 | 1525.000 | 1525.000 | 1525.000 |
-| 41CE6   | 1645.833 | 1580.342 | 1728.604 |
-| 41AN1   | 1532.759 | 1530.355 | 1535.416 |
-| 41AN13  | 1692.692 | 1661.982 | 1736.433 |
-| 41AN14  | 1527.727 | 1524.590 | 1530.809 |
+| 41CE6   | 1645.833 | 1561.123 | 1717.516 |
+| 41AN1   | 1532.759 | 1529.827 | 1535.522 |
+| 41AN13  | 1692.692 | 1645.078 | 1732.253 |
+| 41AN14  | 1527.727 | 1523.858 | 1530.706 |
 | 41AN16  | 1525.000 | 1525.000 | 1525.000 |
-| 41AN18  | 1532.500 | 1522.824 | 1543.094 |
-| 41AN184 | 1596.667 | 1484.215 | 1685.717 |
-| 41AN2   | 1555.625 | 1523.275 | 1589.927 |
+| 41AN18  | 1532.500 | 1521.201 | 1544.412 |
+| 41AN184 | 1596.667 | 1474.738 | 1727.371 |
+| 41AN2   | 1555.625 | 1529.171 | 1592.985 |
 | 41AN21  | 1525.000 | 1525.000 | 1525.000 |
-| 41AN26  | 1716.111 | 1690.228 | 1738.744 |
-| 41AN32  | 1538.750 | 1519.902 | 1561.016 |
-| 41AN34  | 1540.278 | 1519.370 | 1565.414 |
-| 41AN38  | 1528.750 | 1524.974 | 1532.934 |
-| 41AN39  | 1529.286 | 1524.142 | 1534.430 |
-| 41AN44  | 1535.909 | 1532.771 | 1540.494 |
-| 41AN48  | 1532.500 | 1522.361 | 1543.863 |
+| 41AN26  | 1716.111 | 1692.691 | 1741.481 |
+| 41AN32  | 1538.750 | 1520.581 | 1557.072 |
+| 41AN34  | 1540.278 | 1517.978 | 1566.115 |
+| 41AN38  | 1528.750 | 1524.994 | 1532.608 |
+| 41AN39  | 1529.286 | 1524.071 | 1534.501 |
+| 41AN44  | 1535.909 | 1531.424 | 1540.060 |
+| 41AN48  | 1532.500 | 1520.588 | 1543.799 |
 | 41AN53  | 1525.000 | 1525.000 | 1525.000 |
-| 41AN54  | 1545.714 | 1518.174 | 1578.225 |
+| 41AN54  | 1545.714 | 1517.055 | 1577.727 |
 | 41AN56  | 1540.000 | 1540.000 | 1540.000 |
 | 41AN57  | 1525.000 | 1525.000 | 1525.000 |
 | 41AN67  | 1525.000 | 1525.000 | 1525.000 |
 | 41AG66  | 1250.000 | 1250.000 | 1250.000 |
+
+Table 1. Attributes included in table.
 
 ``` r
 # reorder sites by mcd
@@ -171,25 +174,30 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") + # for color publications, I recommend changing "gray" to your favourite colour.
+  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") + # for colour publications, I recommend changing "gray"
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   labs(x = "Archaeological Site", y = "Date Range CE") + # the axes are flipped, so x = y and y = x
   cs
 ```
 
-<img src="mcd_files/figure-gfm/ggplot-1.png" width="100%" />
+<div class="figure">
+
+<img src="mcd_files/figure-gfm/ggplot-1.png" alt="Figure 1. Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin." width="100%" />
+<p class="caption">
+Figure 1. Mean ceramic dates and 95% probability ranges for Caddo sites
+in the Neches River basin.
+</p>
+
+</div>
 
 ``` r
-# figure caption
-  fig.cap = "Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin."
-
 # end of code
 ```
 
 ### Colophon
 
-This version of the analysis was generated on 2021-05-18 07:54:50 using
+This version of the analysis was generated on 2021-05-19 11:29:52 using
 the following computational environment and dependencies:
 
 ``` r
@@ -207,7 +215,7 @@ if ("devtools" %in% installed.packages()) devtools::session_info()
     ##  collate  English_United States.1252  
     ##  ctype    English_United States.1252  
     ##  tz       America/Chicago             
-    ##  date     2021-05-18                  
+    ##  date     2021-05-19                  
     ## 
     ## - Packages -------------------------------------------------------------------
     ##  package     * version date       lib source        
@@ -280,7 +288,7 @@ if ("git2r" %in% installed.packages() & git2r::in_repository(path = ".")) git2r:
 
     ## Local:    master E:/github/mean-ceramic-dates
     ## Remote:   master @ origin (https://github.com/aksel-blaise/mean-ceramic-dates)
-    ## Head:     [5622acb] 2021-05-18: <init kable>
+    ## Head:     [ab0ba41] 2021-05-18: <init colophon>
 
 ## References
 

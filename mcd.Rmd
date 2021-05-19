@@ -7,9 +7,11 @@ bibliography: mcd.bib
 fig_caption: yes
 ---
 
-Before running this script, ensure that there are no duplicates and that each site and type have at least one value assigned. If there is a duplicate site/type or a row/column that are all 0's, this script will not work and line 59 will throw an error that reads: _Error in rmultinom(nsim, data.rowsum[i, ], prob = mydata[i, ]) : no positive probabilities_. 
+Before running this script, ensure that there are no duplicates and that each site and type have at least one value assigned. If there is a duplicate site/type or a row/column that are all 0's, this script will not work and line 59 will throw an error that reads: 
 
-There are two datasets included in this [GitHub repository](https://github.com/aksel-blaise/mean-ceramic-dates); one with all types/sites, and another with only those sites that include >=5 typed vessels. I encourage you to tinker with and explore both.
+_Error in rmultinom(nsim, data.rowsum[i, ], prob = mydata[i, ]) : no positive probabilities_
+
+There are two datasets included in this [GitHub repository](https://github.com/aksel-blaise/mean-ceramic-dates); one with all types/sites (prefix = nrb), and another with only those sites that include >=5 typed vessels (prefix = nrb2). I encourage you to tinker with and explore both.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -30,9 +32,9 @@ types <- as.matrix(colnames(mydata))
 
 dates <- read.csv(file = 'nrb_type_dates.csv', sep = ',', header = T)
 bc <- min(dates[,2:3])
-dates[,2:3] <- dates[,2:3]+(bc*-1)
+dates[,2:3] <- dates[,2:3] + (bc*-1)
 
-midpt <- as.matrix(((dates[,3]-dates[,2])/2)+dates[,2])
+midpt <- as.matrix(((dates[,3] - dates[,2])/2) + dates[,2])
 dates <- cbind(dates,midpt)
 
 mydata2 <- mydata
@@ -50,8 +52,8 @@ rownames(mcd) <- rownames(mydata)
 newtot <- as.matrix(rowSums(x))
 
 for (i in 1:nrow(mcd)) {
-mcd[i,1] <- newtot[i,]/tot[i,]+bc}
-return(mcd)}
+mcd[i,1] <- newtot[i,] / tot[i,] + bc}
+return(mcd)} 
 
 mcd <- mcd.calc(mydata2, types, dates)
 
@@ -60,34 +62,33 @@ mcd <- mcd.calc(mydata2, types, dates)
 nsim <- 1000
 
 data.rowsum <- as.matrix(rowSums(mydata))
-range <- matrix(0,nrow(mydata),2)
+range <- matrix(0, nrow(mydata), 2)
 
 for (i in 1:nrow(mydata)) {
-data.sim <- rmultinom(nsim,data.rowsum[i,],prob=mydata[i,])
+data.sim <- rmultinom(nsim, data.rowsum[i,], prob = mydata[i,])
 data.sim <- t(data.sim)
-temp <- mcd.calc(data.sim,types,dates)
+temp <- mcd.calc(data.sim, types,dates)
 range[i,1] <- mean(temp) - (sd(temp)*1.96)
 range[i,2] <- mean(temp) + (sd(temp)*1.96)}
 
-output <- cbind(row.names(mydata),mcd,range)
-colnames(output) <- c('site','mcd','lower','higher')
+output <- cbind(row.names(mydata), mcd, range)
+colnames(output) <- c('site', 'mcd', 'lower', 'higher')
 
 write.table(output, file = 'mcd_out.csv', sep = ',', row.names = F)
 ```
 
 ## Plot MCD results with confidence interval as error bars
 
-```{r ggplot, out.width = "100%", dpi = 600, echo=TRUE, }
+```{r ggplot, out.width = "100%", dpi = 600, echo=TRUE, fig.cap = "Figure 1. Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin."}
 # plot mean ceramic dates with error bars
 # if you use the Rmd file included in the GitHub repository, it will export a publication-ready figure at 600dpi in the mcd_files folder
 
-#install.packages("devtools") # if devtools not installed, delete the # at the beginning of this line
-#devtools::install_github("tidyverse/ggplot2") # if tidyverse/ggplot2 not installed, delete the # at the beginning of this line (use the most up-to-date version)
+#devtools::install_github("tidyverse/ggplot2")
 library(ggplot2) # load ggplot2
 
 # read mcd_out
 caddo <- read.csv("mcd_out.csv", header = TRUE, as.is = TRUE)
-knitr::kable(caddo, "pipe")
+knitr::kable(caddo, "pipe", caption = "Table 1. Attributes included in table.")
 
 # reorder sites by mcd
 caddo$site <- factor(caddo$site, levels = caddo$site[order(caddo$mcd)])
@@ -106,13 +107,11 @@ cs = theme(
   axis.text.y = element_text(size = 6))
 
 ggplot() +
-  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") + # for color publications, I recommend changing "gray" to your favourite colour.
+  geom_errorbar(data = caddo, mapping = aes(x = Site, ymin = lower, ymax = upper), width = 0.2, size = 1, colour = "gray") + # for colour publications, I recommend changing "gray"
   geom_point(data = caddo, mapping = aes(x = Site, y = Mean_Ceramic_Date_CE), size = 2, shape = 21, fill = "white") +
   coord_flip() + # provides a representation of time similar to what archaeologists are used to seeing
   labs(x = "Archaeological Site", y = "Date Range CE") + # the axes are flipped, so x = y and y = x
   cs
-# figure caption
-  fig.cap = "Mean ceramic dates and 95% probability ranges for Caddo sites in the Neches River basin."
 
 # end of code
 ```
